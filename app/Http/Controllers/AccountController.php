@@ -130,7 +130,6 @@ class AccountController extends ResponseController
         $account->save();
 
         // $account = new Account();
-        // $account->balance = 9;
         // $account->save();
 
         // credit account receiving
