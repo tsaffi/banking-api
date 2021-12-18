@@ -18,36 +18,21 @@ use App\Http\Controllers\CustomerController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
-Route::middleware('auth:api')->get('/demo-url',  function  (Request $request)  {
-    return response()->json(['Laravel 8 CORS Demo']);
-});
+// Registration & Authentication
+Route::post('/register', [RegisterController::class, 'register']);
+Route::post('/login', [LoginController::class, 'login'])->middleware('APIkey');
 
 Route::group([
     // 'prefix' => '/banking/',
-    // 'middleware' => ['json.response']
-    ], function () {
-
-    // Registration & Authentication
-    Route::post('/register', [RegisterController::class, 'register']);
-    Route::post('/login', [LoginController::class, 'login']);
-
-});
-
-Route::group([
-    // 'prefix' => '/banking/',
-    'middleware' => ['auth:api']
+    'middleware' => ['auth:api', 'APIkey']
     ], function () {
 
     Route::post('/logout', [LoginController::class, 'logout']);
 
     // Account
     Route::post('/accounts/create', [AccountController::class, 'create']);
-    Route::get('/accounts/history/{uuid}', [AccountController::class, 'history']);
-    Route::get('/accounts/balance/{uuid}', [AccountController::class, 'balance']);
+    Route::get('/accounts/{uuid}/history', [AccountController::class, 'history']);
+    Route::get('/accounts/{uuid}/balance', [AccountController::class, 'balance']);
     Route::post('/accounts/funds/transfer', [AccountController::class, 'fundsTransfer']);
 
     // Customer

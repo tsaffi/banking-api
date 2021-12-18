@@ -43,43 +43,20 @@ class RegisterController extends ResponseController
       }
 
       $user->name = $request->name;
-      // $user->username = $request->username;
       $user->email = $request->email;
-      // $user->role_id = Role::where('slug', $request->user_type)->first()->id;
       $user->password = \Hash::make($request->password);
-      // $user->auth_key = $request->password;
+
+      if (isset($request->phone) && !empty($request->phone)) {
+        $user->phone = $request->phone;
+      }
+
+      // generate a unique access key
+      $user->access_key = Str::random(32);
 
       if ($user->save()) {
+        $response['apikey'] = $user->access_key;
 
-      /*===================================================
-        BEGIN USER AUTHENTICATION | CHECK LOGIN CONTROLLER
-      ====================================================*/
-
-        if (Auth::attempt(['email'=>$user->email, 'password'=>$request->password])){
-          $user = Auth::user();
-          // $user = $request->user();
-          // $user = Auth::user();
-          $tokenResult = $user->createToken('Personal Access Token');
-          $token = $tokenResult->token;
-          // if ($request->remember_me)
-            // $token->expires_at = Carbon::now()->addWeeks(1);
-          $token->save();
-
-          $response['user'] = Auth::user();
-          // $response['userType'] =  $user->role->name;
-          // $response['userType'] =  count($user->role) ? $user->role[0]->name : null;
-          $response['access_token'] = $tokenResult->accessToken;
-          $response['token_type'] = 'Bearer';
-          $response['expires_at'] = Carbon::parse($tokenResult->token->expires_at)->toDateTimeString();
-          return $this->formatJson("Successful registration", "SUCCESS", 201);
-        } else {
-          return $this->formatJson("An error occured. Please try to authenticate and contact the support if you face some difficulties.", "FAILURE", 401);
-        }
-
-      /*=========================
-        END USER AUTHENTICATION
-      ==========================*/
-
+        return $this->formatJson("Successful registration", "SUCCESS", 201, $response);
       } else {
         $response['hasErrors'] = $user->hasErrors();
         $response['errors'] = $user->getErrors();

@@ -49,7 +49,7 @@ class AccountController extends ResponseController
     if (!$transaction->save())
       return $this->formatJson("The account couldnot be topup", "FAILURE", 406);
 
-    return $this->formatJson("The account was successfully created and top up", "SUCCESS", 201);
+    return $this->formatJson("The account was successfully created and top up", "SUCCESS", 201, $account);
   }
 
 

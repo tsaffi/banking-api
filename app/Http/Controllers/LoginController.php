@@ -75,22 +75,9 @@ class LoginController extends ResponseController
     if ($request->remember_me)
       $token->expires_at = Carbon::now()->addWeeks(1);
     $token->save();
-/*            $user = Auth::user();
-    $response['token'] =  $user->createToken('Personal Access Token')->token;
-    $user->auth_key = $response['token'];
-    if ($request->remember_me)
-        $response['in'] = 1;
-        // $user->expires_at = Carbon::now()->addWeeks(1);
-    $user->save();*/
 
-    // update user last login
-/*    $user->update([
-      'last_login_at' => now(),
-    ]);
-*/
     $response['user'] = Auth::user();
-    // $response['userType'] =  $user->role->name;
-    // $response['userType'] =  count($user->role) ? $user->role[0]->name : null;
+    $response['apikey'] = Auth::user()->access_key;
     $response['access_token'] = $tokenResult->accessToken;
     $response['token_type'] = 'Bearer';
     $response['expires_at'] = Carbon::parse($tokenResult->token->expires_at)->toDateTimeString();
