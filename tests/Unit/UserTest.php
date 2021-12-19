@@ -3,9 +3,12 @@
 namespace Tests\Unit;
 
 use Tests\TestCase;
+use Illuminate\Foundation\Testing\WithFaker;
 
 class UserTest extends TestCase
 {
+    use WithFaker;
+
     /**
      * register a user
      *
@@ -15,7 +18,7 @@ class UserTest extends TestCase
     {
         $response = $this->post('/api/register', [
             "name" => "John Doe",
-            "email" => "johndoe2@gmail.com",
+            'email' => $this->faker->unique()->safeEmail(),
             "password" => "password"
         ]);
         $response->assertStatus(201);

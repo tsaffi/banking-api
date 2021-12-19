@@ -28,15 +28,16 @@ class AccountController extends ResponseController
       'customer_id' => 'required|exists:customers,id',
       'amount' => 'required'
     ]);
-  
+
     if ($validator->fails()) {
       return $this->formatJson($validator->errors()->first(), "Bad Request", 400);
     }
-  
+
     // create user bank account
     $account = new Account();
     $account->uuid = generateAID();
     $account->customer_id = $request->customer_id;
+    $account->balance = $request->amount;
 
     if (!$account->save())
       return $this->formatJson("The account could not be created. Please try again", "FAILURE", 406);
@@ -122,15 +123,11 @@ class AccountController extends ResponseController
         }
 
         if ($account->balance < $request->amount) {
-          // return $this->formatJson("Funds not transfered", "FAILURE", 406);
           throw new \Exception('The account balance is less than the amount requested');
         }
 
         $account->balance = $account->balance - $request->amount;
         $account->save();
-
-        // $account = new Account();
-        // $account->save();
 
         // credit account receiving
         $account = Account::where('uuid', $request->account_credited)->first();
@@ -145,7 +142,7 @@ class AccountController extends ResponseController
         return $this->formatJson("Funds successfully transfered", "SUCCESS", 200);
       } catch (\Exception $e) {
         DB::rollback();
-        return $this->formatJson($e, "FAILURE", 406);
+        return $this->formatJson($e->getMessage(), "FAILURE", 406);
       }
     });
 

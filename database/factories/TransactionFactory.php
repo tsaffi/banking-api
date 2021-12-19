@@ -15,12 +15,12 @@ class TransactionFactory extends Factory
     public function definition()
     {
         $account = \App\Models\Account::all()->pluck('id')->toArray();
-        $customer = \App\Models\Customer::all()->pluck('id')->toArray();
+        $account_uuid = \App\Models\Account::all()->pluck('uuid')->toArray();
 
         return [
             // 'account_id' => $this->faker->randomElement($account),
-            'from' => $this->faker->randomElement($customer),
-            'to' => $this->faker->randomElement($customer),
+            'from' => $this->faker->randomElement($account_uuid),
+            'to' => $this->faker->randomElement($account_uuid),
             // 'type' => $this->faker->randomElement(['transfer', 'deposit', 'withdrawal']),
             'type' => 'transfer',
             'amount' => rand(2000, 50000),
