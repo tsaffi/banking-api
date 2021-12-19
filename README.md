@@ -82,6 +82,18 @@ php artisan serve
 ```
 
 To view banking-api api go to:
-```php
+
 https://banking-api-237.herokuapp.com/api/
+
+## Test
+
+To run some tests, use the command below
+
+```bash
+php artisan test
 ```
+
+
+<p align="center">
+    <img src="screenshots/test.png" height="500"/>
+</p>
